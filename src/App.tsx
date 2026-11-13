@@ -10,9 +10,25 @@ function App() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const [selectedStage, setSelectedStage] = useState<any>(null);
-  const [spots, setSpots] = useState<any[]>(spotsData);
+  const [spots, setSpots] = useState<any[]>(() => {
+    const saved = localStorage.getItem('gr65-spots');
+    return saved ? JSON.parse(saved) : spotsData;
+  });
   const [gpsStatus, setGpsStatus] = useState('Inactif');
   const [newSpot, setNewSpot] = useState({ name: '', lat: '', lng: '', water: false, notes: '' });
+  const [journal, setJournal] = useState<string[]>(() => {
+    const saved = localStorage.getItem('gr65-journal');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [journalEntry, setJournalEntry] = useState('');
+
+  useEffect(() => {
+    localStorage.setItem('gr65-spots', JSON.stringify(spots));
+  }, [spots]);
+
+  useEffect(() => {
+    localStorage.setItem('gr65-journal', JSON.stringify(journal));
+  }, [journal]);
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -60,7 +76,6 @@ function App() {
 
   const addMarkers = (spotList: any[]) => {
     if (!map.current) return;
-    // Clear existing markers (simple approach: reload page for demo)
     spotList.forEach((spot: any) => {
       const el = document.createElement('div');
       el.className = 'marker';
@@ -101,7 +116,13 @@ function App() {
     setSpots(updated);
     addMarkers([spot]);
     setNewSpot({ name: '', lat: '', lng: '', water: false, notes: '' });
-    alert('Spot ajouté (local uniquement pour cette ébauche)');
+  };
+
+  const addJournalEntry = () => {
+    if (!journalEntry.trim()) return;
+    const entry = `${new Date().toLocaleString()} — ${journalEntry}`;
+    setJournal([entry, ...journal]);
+    setJournalEntry('');
   };
 
   return (
@@ -141,8 +162,19 @@ function App() {
               <input placeholder="Longitude" value={newSpot.lng} onChange={e => setNewSpot({...newSpot, lng: e.target.value})} required />
               <label><input type="checkbox" checked={newSpot.water} onChange={e => setNewSpot({...newSpot, water: e.target.checked})} /> Eau disponible</label>
               <textarea placeholder="Notes" value={newSpot.notes} onChange={e => setNewSpot({...newSpot, notes: e.target.value})} />
-              <button type="submit">Ajouter</button>
+              <button type="submit">Ajouter (persisté)</button>
             </form>
+          </section>
+
+          <section>
+            <h2>Journal de bord</h2>
+            <div className="form">
+              <textarea placeholder="Note du jour..." value={journalEntry} onChange={e => setJournalEntry(e.target.value)} />
+              <button type="button" onClick={addJournalEntry}>Ajouter au journal</button>
+            </div>
+            <ul className="journal">
+              {journal.map((entry, i) => <li key={i}>{entry}</li>)}
+            </ul>
           </section>
 
           <section>
@@ -156,8 +188,8 @@ function App() {
 
           <section>
             <h2>Offline & Suivi</h2>
-            <p>PWA configurée avec cache de base. GPS via contrôle MapLibre (statut affiché en header).</p>
-            <p><em>Track = sample détaillé. Pour GPX réel : remplacer track.sample.json.</em></p>
+            <p>Spots et journal persistés en localStorage. PWA + cache de base. GPS via contrôle MapLibre.</p>
+            <p><em>Track = sample. Pour GPX réel : remplacer track.sample.json.</em></p>
           </section>
         </aside>
       </div>
