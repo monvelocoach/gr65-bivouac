@@ -1,0 +1,26 @@
+[
+  {
+    "id": "geneva-puy",
+    "name": "Genève → Le Puy-en-Velay",
+    "distance": "~360 km",
+    "days": "12-18",
+    "waterPoints": "nombreux villages",
+    "notes": "Via Gebennensis. Paysages Alpes / Rhône. Vérifier réglementation suisse au départ."
+  },
+  {
+    "id": "puy-aubrac",
+    "name": "Le Puy → Aubrac",
+    "distance": "~150 km",
+    "days": "6-8",
+    "waterPoints": "variables (plateau)",
+    "notes": "Via Podiensis. Attention à l'eau sur le plateau d'Aubrac. Bivouacs possibles hors zones sensibles."
+  },
+  {
+    "id": "aubrac-sjpp",
+    "name": "Aubrac → Saint-Jean-Pied-de-Port",
+    "distance": "~550 km",
+    "days": "20-25",
+    "waterPoints": "villages et fontaines",
+    "notes": "Lot, Quercy, Gers, Pays basque. Fin à SJPP avant les Pyrénées."
+  }
+]
