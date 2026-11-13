@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import spots from './data/spots.sample.json';
+import spotsData from './data/spots.sample.json';
 import track from './data/track.sample.json';
 import stages from './data/stages.sample.json';
 import './App.css';
@@ -10,6 +10,9 @@ function App() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const [selectedStage, setSelectedStage] = useState<any>(null);
+  const [spots, setSpots] = useState<any[]>(spotsData);
+  const [gpsStatus, setGpsStatus] = useState('Inactif');
+  const [newSpot, setNewSpot] = useState({ name: '', lat: '', lng: '', water: false, notes: '' });
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -22,10 +25,14 @@ function App() {
     });
 
     map.current.addControl(new maplibregl.NavigationControl(), 'top-right');
-    map.current.addControl(new maplibregl.GeolocateControl({
+    const geo = new maplibregl.GeolocateControl({
       positionOptions: { enableHighAccuracy: true },
       trackUserLocation: true
-    }), 'top-right');
+    });
+    map.current.addControl(geo, 'top-right');
+
+    geo.on('geolocate', () => setGpsStatus('Actif'));
+    geo.on('error', () => setGpsStatus('Erreur'));
 
     map.current.on('load', () => {
       map.current!.addSource('gr65', {
@@ -43,29 +50,7 @@ function App() {
         }
       });
 
-      spots.forEach((spot: any) => {
-        const el = document.createElement('div');
-        el.className = 'marker';
-        el.style.backgroundColor = spot.water ? '#4CAF50' : '#E4B15A';
-        el.style.width = '18px';
-        el.style.height = '18px';
-        el.style.borderRadius = '50%';
-        el.style.border = '2px solid white';
-        el.style.boxShadow = '0 0 4px rgba(0,0,0,0.5)';
-
-        new maplibregl.Marker(el)
-          .setLngLat([spot.lng, spot.lat])
-          .setPopup(
-            new maplibregl.Popup({ offset: 20 }).setHTML(
-              `<strong>${spot.name}</strong><br/>
-               Type: ${spot.type}<br/>
-               Eau: ${spot.water ? '✅' : '❌'}<br/>
-               ${spot.legal ? `Légal: ${spot.legal}<br/>` : ''}
-               ${spot.notes || ''}`
-            )
-          )
-          .addTo(map.current!);
-      });
+      addMarkers(spots);
     });
 
     return () => {
@@ -73,11 +58,57 @@ function App() {
     };
   }, []);
 
+  const addMarkers = (spotList: any[]) => {
+    if (!map.current) return;
+    // Clear existing markers (simple approach: reload page for demo)
+    spotList.forEach((spot: any) => {
+      const el = document.createElement('div');
+      el.className = 'marker';
+      el.style.backgroundColor = spot.water ? '#4CAF50' : '#E4B15A';
+      el.style.width = '18px';
+      el.style.height = '18px';
+      el.style.borderRadius = '50%';
+      el.style.border = '2px solid white';
+      el.style.boxShadow = '0 0 4px rgba(0,0,0,0.5)';
+
+      new maplibregl.Marker(el)
+        .setLngLat([spot.lng, spot.lat])
+        .setPopup(
+          new maplibregl.Popup({ offset: 20 }).setHTML(
+            `<strong>${spot.name}</strong><br/>
+             Type: ${spot.type || 'bivouac'}<br/>
+             Eau: ${spot.water ? '✅' : '❌'}<br/>
+             ${spot.notes || ''}`
+          )
+        )
+        .addTo(map.current!);
+    });
+  };
+
+  const handleAddSpot = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newSpot.name || !newSpot.lat || !newSpot.lng) return;
+    const spot = {
+      id: Date.now().toString(),
+      name: newSpot.name,
+      lat: parseFloat(newSpot.lat),
+      lng: parseFloat(newSpot.lng),
+      type: 'bivouac',
+      water: newSpot.water,
+      notes: newSpot.notes
+    };
+    const updated = [...spots, spot];
+    setSpots(updated);
+    addMarkers([spot]);
+    setNewSpot({ name: '', lat: '', lng: '', water: false, notes: '' });
+    alert('Spot ajouté (local uniquement pour cette ébauche)');
+  };
+
   return (
     <div className="app">
       <header>
         <h1>GR65 Bivouac</h1>
-        <p>Genève → Saint-Jean-Pied-de-Port · Mode bivouac</p>
+        <p>Genève → Saint-Jean-Pied-de-Port · Mode bivouac · GPS: {gpsStatus}</p>
       </header>
 
       <div className="layout">
@@ -103,6 +134,18 @@ function App() {
           </section>
 
           <section>
+            <h2>Ajouter un spot</h2>
+            <form onSubmit={handleAddSpot} className="form">
+              <input placeholder="Nom" value={newSpot.name} onChange={e => setNewSpot({...newSpot, name: e.target.value})} required />
+              <input placeholder="Latitude" value={newSpot.lat} onChange={e => setNewSpot({...newSpot, lat: e.target.value})} required />
+              <input placeholder="Longitude" value={newSpot.lng} onChange={e => setNewSpot({...newSpot, lng: e.target.value})} required />
+              <label><input type="checkbox" checked={newSpot.water} onChange={e => setNewSpot({...newSpot, water: e.target.checked})} /> Eau disponible</label>
+              <textarea placeholder="Notes" value={newSpot.notes} onChange={e => setNewSpot({...newSpot, notes: e.target.value})} />
+              <button type="submit">Ajouter</button>
+            </form>
+          </section>
+
+          <section>
             <h2>Réglementation bivouac</h2>
             <ul className="rules">
               <li><strong>Suisse (départ Genève)</strong> : Tolérance au-dessus de la limite des arbres pour 1 nuit (CC art. 699). Interdit dans parcs nationaux, zones de chasse, réserves.</li>
@@ -112,9 +155,9 @@ function App() {
           </section>
 
           <section>
-            <h2>Offline</h2>
-            <p>PWA configurée. Pour tuiles offline complètes : pré-télécharger une zone (ex. via PMTiles ou cache Workbox) ou utiliser OsmAnd en complément.</p>
-            <p><em>Track actuel = sample approximatif. Remplacer par un GPX réel (sources : VisuGPX, FFRandonnée, Bivimap).</em></p>
+            <h2>Offline & Suivi</h2>
+            <p>PWA configurée avec cache de base. GPS via contrôle MapLibre (statut affiché en header).</p>
+            <p><em>Track = sample détaillé. Pour GPX réel : remplacer track.sample.json.</em></p>
           </section>
         </aside>
       </div>
