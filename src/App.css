@@ -119,6 +119,21 @@ header p {
   opacity: 0.9;
 }
 
+.journal {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.journal li {
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #333;
+  opacity: 0.9;
+}
+
 .marker {
   cursor: pointer;
 }
