@@ -9,14 +9,32 @@
     "notes": "Départ Via Gebennensis. Vérifier réglementation cantonale."
   },
   {
-    "id": "sample-bivouac",
-    "name": "Exemple spot bivouac",
-    "lat": 45.0,
-    "lng": 3.0,
+    "id": "le-puy",
+    "name": "Le Puy-en-Velay",
+    "lat": 45.0434,
+    "lng": 3.8851,
+    "type": "stage",
+    "water": true,
+    "notes": "Point de jonction Via Gebennensis / Via Podiensis. Nombreux gîtes et services."
+  },
+  {
+    "id": "aubrac",
+    "name": "Aubrac (exemple)",
+    "lat": 44.62,
+    "lng": 2.98,
     "type": "bivouac",
     "water": true,
-    "shelter": false,
-    "legal": "toléré (hors zone protégée)",
-    "notes": "Point d'exemple à remplacer par des données réelles."
+    "shelter": true,
+    "legal": "toléré",
+    "notes": "Zone d'exemple. Vérifier conditions locales et eau."
+  },
+  {
+    "id": "sjpp",
+    "name": "Saint-Jean-Pied-de-Port",
+    "lat": 43.1634,
+    "lng": -1.2378,
+    "type": "end",
+    "water": true,
+    "notes": "Fin de la section française. Nombreux hébergements."
   }
 ]
