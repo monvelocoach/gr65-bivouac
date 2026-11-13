@@ -11,10 +11,13 @@ App offline-first orientée autonomie : spots de bivouac, points d'eau, régleme
 - vite-plugin-pwa
 
 ## État actuel
-- Carte MapLibre interactive
+- Carte MapLibre + contrôles (navigation, géolocalisation)
 - Track sample (GeoJSON approximatif)
-- Markers de spots avec popups (eau, notes)
-- Styles de base (thème sombre)
+- Markers spots avec popups (eau, légalité, notes)
+- Panneau planificateur d'étapes
+- Section réglementation (Suisse / France)
+- Config PWA améliorée (cache de base)
+- Layout responsive
 
 ## Lancer
 ```bash
@@ -25,10 +28,13 @@ npm run dev
 ## Prochaines étapes
 - [x] Carte interactive + track sample
 - [x] Spots + markers
-- [ ] Track GPX réel
-- [ ] Couche réglementation
-- [ ] Planificateur d'étapes
-- [ ] Mode offline complet (tuiles)
-- [ ] Contribution communautaire
+- [x] Planificateur d'étapes (sample)
+- [x] Réglementation de base
+- [ ] Track GPX réel (sources : VisuGPX, FFRandonnée, Bivimap, MonGR)
+- [ ] Tuiles offline complètes (PMTiles ou pré-cache zone)
+- [ ] Contribution communautaire (ajout spots)
+- [ ] Suivi GPS + journal
 
 **Note** : Respecter les règles locales de bivouac. Le bivouac est généralement toléré du coucher au lever du soleil hors zones protégées et avec autorisation sur terrain privé.
+
+Pour un track réel, remplace `src/data/track.sample.json` par un GeoJSON converti depuis GPX (ou adapte le code pour charger un fichier GPX).
