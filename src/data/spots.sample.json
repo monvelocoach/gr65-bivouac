@@ -1,0 +1,22 @@
+[
+  {
+    "id": "geneva-start",
+    "name": "Départ Genève",
+    "lat": 46.2044,
+    "lng": 6.1432,
+    "type": "start",
+    "water": false,
+    "notes": "Départ Via Gebennensis. Vérifier réglementation cantonale."
+  },
+  {
+    "id": "sample-bivouac",
+    "name": "Exemple spot bivouac",
+    "lat": 45.0,
+    "lng": 3.0,
+    "type": "bivouac",
+    "water": true,
+    "shelter": false,
+    "legal": "toléré (hors zone protégée)",
+    "notes": "Point d'exemple à remplacer par des données réelles."
+  }
+]
