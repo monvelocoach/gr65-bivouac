@@ -12,13 +12,14 @@ App offline-first orientée autonomie : spots de bivouac, points d'eau, régleme
 
 ## État actuel
 - Carte MapLibre + contrôles (navigation, géolocalisation)
-- Track sample détaillé (plus de points intermédiaires)
+- Track sample détaillé
 - Markers spots avec popups
-- Panneau planificateur d'étapes
-- Formulaire d'ajout de spots (local)
-- Statut GPS affiché
-- Section réglementation
-- Config PWA + layout responsive
+- Planificateur d'étapes
+- Ajout de spots **persistés** (localStorage)
+- Journal de bord **persisté** (localStorage)
+- Statut GPS
+- Réglementation
+- PWA + layout responsive
 
 ## Lancer
 ```bash
@@ -27,16 +28,16 @@ npm run dev
 ```
 
 ## Prochaines étapes
-- [x] Carte interactive + track sample
+- [x] Carte + track sample
 - [x] Spots + markers
-- [x] Planificateur d'étapes
+- [x] Planificateur
 - [x] Réglementation
 - [x] Contribution spots (locale)
 - [x] Suivi GPS basique
+- [x] Persistance localStorage (spots + journal)
+- [x] Journal de bord
 - [ ] Track GPX réel (remplacer track.sample.json)
 - [ ] Tuiles offline complètes (PMTiles)
-- [ ] Persistance spots (backend ou IndexedDB)
-- [ ] Journal de bord
 
 **Note** : Respecter les règles locales de bivouac. Le bivouac est généralement toléré du coucher au lever du soleil hors zones protégées et avec autorisation sur terrain privé.
 
